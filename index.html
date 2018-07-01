@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
         <title>Reaction-Diffusion</title>
+        <script src="js/game.js"></script>
         <script src="js/grid.js"></script>
         <script src="js/matrix.js"></script>
         <script src="js/main.js"></script>
@@ -11,27 +12,46 @@
     <body>
         <canvas id="canvas"></canvas>
         <div>
-            <fieldset>
+            <fieldset id="controls-form-group">
                 <legend>Controls</legend>
-                <button>Start</button>
-                <button>Pause</button>
-                <button>Step</button>
-                <button>Clear</button>
+                <button id="control-start">Start</button>
+                <button id="control-pause">Pause</button>
+                <button id="control-step">Step</button>
+                <button id="control-clear">Clear</button>
+                <p>Warning: Progress is slow!</p>
             </fieldset>
-            <fieldset style="display: flex; flex-direction: column;">
+            <fieldset class="parameters" id="parameters-form-group">
                 <legend>Parameters</legend>
 
-                <label for="diffusion-rate-a">Diffusion rate for A</label>
-                <input type="number" id="diffusion-rate-a" min="0" max="1">
+                <label for="param-rate-a">Diffusion rate for A</label>
+                <input type="number" id="param-rate-a" class="parameters-full-width" min="0" max="1" step="0.001" data-default="1.0">
 
-                <label for="diffusion-rate-b">Diffusion rate for B</label>
-                <input type="number" id="diffusion-rate-b" min="0" max="1">
+                <label for="param-rate-b">Diffusion rate for B</label>
+                <input type="number" id="param-rate-b" class="parameters-full-width" min="0" max="1" step="0.001" data-default="0.5">
 
-                <label for="feed-rate">Feed rate</label>
-                <input type="number" id="feed-rate" min="0" max="1" step="0.001">
+                <label for="param-feed-rate">Feed rate</label>
+                <input type="number" id="param-feed-rate" class="parameters-full-width" min="0" max="1" step="0.001" data-default="0.055">
 
-                <label for="kill-rate">Kill rate</label>
-                <input type="number" id="kill-rate" min="0" max="1" step="0.001">
+                <label for="param-kill-rate">Kill rate</label>
+                <input type="number" id="param-kill-rate" class="parameters-full-width" min="0" max="1" step="0.001" data-default="0.062">
+
+                <label>Virtual resolution</label>
+                <input type="number" id="param-resolution" class="parameters-full-width" min="100" max="800" data-default="200">
+
+                <label>Seed method</label>
+                <div class="parameters-radios">
+                    <input type="radio" name="param-seed" id="param-seed-random" value="random" checked>
+                    <label for="param-seed-random">Random</label>
+                </div>
+                <div class="parameters-radios mb-4">
+                    <input type="radio" name="param-seed" id="param-seed-draw" value="draw">
+                    <label for="param-seed-draw">Draw with mouse</label>
+                </div>
+
+                <span class="parameters-buttons">
+                    <button id="param-reset-control">Reset</button>
+                    <button id="param-generate-control">Generate</button>
+                </span>
             </fieldset>
         </div>
     </body>

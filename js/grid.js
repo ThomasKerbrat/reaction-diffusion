@@ -1,32 +1,42 @@
 
 class Grid {
-    constructor(width, height, computationsPerSecond) {
+    constructor(width, height, { doSeed, diffusionA, diffusionB, feed, kill } = {}) {
         this.width = width;
         this.height = height;
-        this.computationsPerSecond = computationsPerSecond;
 
-        this.diffusionA = 1.0;
-        this.diffusionB = 0.5;
-        this.feed = 0.055;
-        this.kill = 0.062;
+        this.diffusionA = diffusionA;
+        this.diffusionB = diffusionB;
+        this.feed = feed;
+        this.kill = kill;
 
         this.cells = matrix(width, height, () => ({ a: 1, b: 0 }));
         this.next = matrix(width, height, () => ({ a: 1, b: 0 }));
 
-        const radius = 5;
+        if (doSeed === true) {
+            const radius = 6;
 
-        const seeds = [];
-        const seedNb = 2;
-        for (let i = 0; i < seedNb; i++) {
-            seeds.push({
-                x: radius + Math.floor(Math.random() * (this.width - 2 * radius)),
-                y: radius + Math.floor(Math.random() * (this.height - 2 * radius)),
-            });
+            const seeds = [];
+            const seedNb = 4;
+            for (let i = 0; i < seedNb; i++) {
+                seeds.push({
+                    x: radius + Math.floor(Math.random() * (this.width - 2 * radius)),
+                    y: radius + Math.floor(Math.random() * (this.height - 2 * radius)),
+                });
+            }
+
+            // seeds.splice(0, seeds.length, { x: Math.floor(this.width / 2), y: Math.floor(this.height / 2) });
+
+            for (let seed of seeds) {
+                this.seedCircle(seed.x, seed.y, radius);
+            }
         }
+    }
 
-        for (let seed of seeds) {
-            for (let i = seed.x - radius; i < seed.x + radius; i++) {
-                for (let j = seed.y - radius; j < seed.y + radius; j++) {
+    seedCircle(x, y, radius) {
+        for (let i = x - radius; i <= x + radius; i++) {
+            for (let j = y - radius; j <= y + radius; j++) {
+                const distance = Math.sqrt(Math.pow(i - x, 2) + Math.pow(j - y, 2));
+                if (distance - 0.5 <= radius && (i >= 0 && i < this.width && j >= 0 && j < this.height)) {
                     this.cells[i][j].b = 1;
                 }
             }
@@ -44,7 +54,7 @@ class Grid {
                     * laplacianA
                     - reaction
                     + this.feed * (1 - this.cells[i][j].a)
-                ) * (1 / this.computationsPerSecond);
+                );
 
                 const laplacianB = Grid.laplacian(this.cells, i, j, 'b');
                 this.next[i][j].b = this.cells[i][j].b + (
@@ -52,7 +62,7 @@ class Grid {
                     * laplacianB
                     + reaction
                     - (this.kill + this.feed) * this.cells[i][j].b
-                ) * (1 / this.computationsPerSecond);
+                );
             }
         }
 
