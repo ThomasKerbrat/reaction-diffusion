@@ -29,6 +29,7 @@ class Game {
             pauseButton: document.querySelector('#control-pause'),
             stepButton: document.querySelector('#control-step'),
             clearButton: document.querySelector('#control-clear'),
+            inverseCheckbox: document.querySelector('#control-inverse'),
 
             parametersGroup: document.querySelector('#parameters-form-group'),
             rateAInput: document.querySelector('#param-rate-a'),
@@ -36,6 +37,7 @@ class Game {
             feedRateInput: document.querySelector('#param-feed-rate'),
             killRateInput: document.querySelector('#param-kill-rate'),
             resolutionInput: document.querySelector('#param-resolution'),
+            seedMiddle: document.querySelector('#param-seed-middle'),
             seedRandom: document.querySelector('#param-seed-random'),
             seedDraw: document.querySelector('#param-seed-draw'),
             resetButton: document.querySelector('#param-reset-control'),
@@ -46,6 +48,7 @@ class Game {
         this.domElements.pauseButton.addEventListener('click', this.pause.bind(this));
         this.domElements.stepButton.addEventListener('click', this.step.bind(this));
         this.domElements.clearButton.addEventListener('click', this.clear.bind(this));
+        this.domElements.inverseCheckbox.addEventListener('click', this.inverseColor.bind(this));
 
         this.domElements.resetButton.addEventListener('click', this.reset.bind(this));
         this.domElements.generateButton.addEventListener('click', this.generate.bind(this));
@@ -115,6 +118,10 @@ class Game {
         this.domElements.controlsGroup.setAttribute('disabled', true);
         this.domElements.parametersGroup.removeAttribute('disabled');
     }
+
+    inverseColor() {
+        window.appconfig.inverseColor = Boolean(this.domElements.inverseCheckbox.checked);
+    }
     // #endregion
 
 
@@ -123,10 +130,9 @@ class Game {
     generate() {
         this.logWidth = this.logHeight = Number(this.domElements.resolutionInput.value);
         this.scale = this.width / this.logWidth;
-        console.log(this.scale);
 
         const options = {
-            doSeed: this.domElements.seedRandom.checked,
+            seedMethod: this.domElements.seedMiddle.checked ? SeedMethod.middle : this.domElements.seedRandom.checked ? SeedMethod.random : SeedMethod.none,
             diffusionA: Number(this.domElements.rateAInput.value),
             diffusionB: Number(this.domElements.rateBInput.value),
             feed: Number(this.domElements.feedRateInput.value),

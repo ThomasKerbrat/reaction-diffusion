@@ -8,4 +8,8 @@ window.addEventListener('load', function () {
 
     canvasElement.setAttribute('width', size);
     canvasElement.setAttribute('height', size);
+
+    window.appconfig = {
+        inverseColor: false,
+    };
 });

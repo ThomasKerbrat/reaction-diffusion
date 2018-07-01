@@ -1,6 +1,12 @@
 
+const SeedMethod = Object.freeze({
+    none: Symbol('none'),
+    middle: Symbol('middle'),
+    random: Symbol('random'),
+});
+
 class Grid {
-    constructor(width, height, { doSeed, diffusionA, diffusionB, feed, kill } = {}) {
+    constructor(width, height, { seedMethod, diffusionA, diffusionB, feed, kill } = {}) {
         this.width = width;
         this.height = height;
 
@@ -12,10 +18,18 @@ class Grid {
         this.cells = matrix(width, height, () => ({ a: 1, b: 0 }));
         this.next = matrix(width, height, () => ({ a: 1, b: 0 }));
 
-        if (doSeed === true) {
-            const radius = 6;
+        this.seed(seedMethod);
+    }
 
-            const seeds = [];
+    seed(method) {
+        if (method === SeedMethod.none) { return; }
+
+        const radius = 6;
+        const seeds = [];
+
+        if (method === SeedMethod.middle) {
+            this.seedSquare(Math.floor(this.width / 2), Math.floor(this.height / 2), radius);
+        } else if (method === SeedMethod.random) {
             const seedNb = 4;
             for (let i = 0; i < seedNb; i++) {
                 seeds.push({
@@ -24,12 +38,11 @@ class Grid {
                 });
             }
 
-            // seeds.splice(0, seeds.length, { x: Math.floor(this.width / 2), y: Math.floor(this.height / 2) });
-
             for (let seed of seeds) {
                 this.seedCircle(seed.x, seed.y, radius);
             }
         }
+
     }
 
     seedCircle(x, y, radius) {
@@ -39,6 +52,14 @@ class Grid {
                 if (distance - 0.5 <= radius && (i >= 0 && i < this.width && j >= 0 && j < this.height)) {
                     this.cells[i][j].b = 1;
                 }
+            }
+        }
+    }
+
+    seedSquare(x, y, radius) {
+        for (let i = x - radius; i <= x + radius; i++) {
+            for (let j = y - radius; j <= y + radius; j++) {
+                this.cells[i][j].b = 1;
             }
         }
     }
@@ -101,6 +122,7 @@ class Grid {
                 let color = Math.floor((this.cells[i][j].a - this.cells[i][j].b) * 255);
                 if (color < 0) { color = 0; }
                 if (color > 255) { color = 255; }
+                if (window.appconfig.inverseColor === true) { color = 255 - color; }
 
                 imageData.data[index + 0] = color;
                 imageData.data[index + 1] = color;
