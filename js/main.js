@@ -1,7 +1,8 @@
 
 window.addEventListener('load', function () {
     const width = 200, height = 200;
-    const grid = new Grid(width, height);
+    const computationsPerSecond = 30;
+    const grid = new Grid(width, height, computationsPerSecond);
 
     /** @type {HTMLCanvasElement} */
     const canvasElement = document.querySelector('#canvas');
@@ -13,7 +14,7 @@ window.addEventListener('load', function () {
 
     setInterval(() => {
         grid.step();
-    }, 10);
+    }, 1000 / computationsPerSecond);
 
     render();
     function render() {

@@ -1,8 +1,9 @@
 
 class Grid {
-    constructor(width, height) {
+    constructor(width, height, computationsPerSecond) {
         this.width = width;
         this.height = height;
+        this.computationsPerSecond = computationsPerSecond;
 
         this.diffusionA = 1.0;
         this.diffusionB = 0.5;
@@ -15,7 +16,7 @@ class Grid {
         const radius = 5;
 
         const seeds = [];
-        const seedNb = 6;
+        const seedNb = 2;
         for (let i = 0; i < seedNb; i++) {
             seeds.push({
                 x: radius + Math.floor(Math.random() * (this.width - 2 * radius)),
@@ -43,7 +44,7 @@ class Grid {
                     * laplacianA
                     - reaction
                     + this.feed * (1 - this.cells[i][j].a)
-                );
+                ) * (1 / this.computationsPerSecond);
 
                 const laplacianB = Grid.laplacian(this.cells, i, j, 'b');
                 this.next[i][j].b = this.cells[i][j].b + (
@@ -51,7 +52,7 @@ class Grid {
                     * laplacianB
                     + reaction
                     - (this.kill + this.feed) * this.cells[i][j].b
-                );
+                ) * (1 / this.computationsPerSecond);
             }
         }
 
