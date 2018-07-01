@@ -1,15 +1,15 @@
 
-html, body {
+/* html, body {
     margin: 0px;
     padding: 0px;
     height: 100%;
-}
+} */
 
 body {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
 }
 
 canvas {
